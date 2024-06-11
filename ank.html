@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+        document.addEventListener("WeixinJSBridgeReady", function onBridgeReady() {
+            WeixinJSBridge.call("hideOptionMenu");
+        }, false);
+</script>
+<meta charset="utf-8">
+<meta name="referrer" content="never">
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+<meta http-equiv="Access-Control-Allow-Origin" content="*" />
+<meta http-equiv="Access-Control-Allow-Credentials" content="*" />
+<meta http-equiv="x-ua-compatible" content="IE=edge" >
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+<title></title>
+<link rel="stylesheet" href="https://unpkg.byted-static.com/xgplayer/3.0.1/dist/index.min.css">
+<script src="https://unpkg.byted-static.com/xgplayer/3.0.1/dist/index.min.js" charset="utf-8"></script>
+<script src="https://unpkg.byted-static.com/xgplayer-hls.js/3.0.0-alpha.1/dist/index.min.js" charset="utf-8"></script>
+<script src="https://lib.baomitu.com/jquery/1.10.2/jquery.min.js"></script>
+<style>
+body, html {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+* {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    text-decoration: none;
+}
+
+.player-container {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 50px);
+    z-index: 1;
+}
+
+.prism-player {
+    width: 100%;
+    height: 100%;
+}
+
+.button-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 20px;
+    z-index: 2;
+}
+
+.button {
+    display: inline-block;
+    height: 40px;
+    background-color: orange;
+    color: white;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 10px;
+    padding: 0 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    font-size: 16px;  
+}
+
+.button:hover {
+    background-color: deepskyblue;
+}
+
+#loading {
+    background: url(https://img.zcool.cn/community/01f0c858c3fb2da801219c779e4776.gif);
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    z-index: 10000000001;
+    background-size: 100% 100%;
+}
+</style>
+</head>
+<body>
+<div class="player-container">
+    <div class="prism-player" id="player-con"></div>
+</div>
+<div class="button-container">
+    <button id="button" class="button"></button>
+    <button class="button" onclick="window.history.back();">返回</button>
+</div>
+<script>
+var u = getQueryVariable('u');
+var t = getQueryVariable('t');
+var bt = getQueryVariable('bt');
+var btu = getQueryVariable('btu');
+var screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+document.title = t;
+
+var nextButton = document.getElementById("button");
+nextButton.innerHTML = bt;
+
+nextButton.addEventListener("click", function () {
+  window.location.href = btu;
+});
+
+var player = new window.Player({
+  id: "player-con",
+  url: u,
+  playsinline: true,
+  autoplay: true,
+  width: "100%",
+  height: (screenHeight - 80) + "px",
+  playbackRate: [0.5, 0.75, 1, 1.25, 1.5, 2],
+  plugins: [window.HlsJsPlugin],
+});
+
+player.on('ended', function () {
+  var jumpUrl = btu;
+  if (!isEmpty(jumpUrl)) {
+    setInterval(function () {
+      window.location.replace(jumpUrl);
+    }, 2000);
+  }
+});
+
+function isEmpty(params) {
+  return params === '' || params === undefined || params === null;
+}
+
+function getQueryVariable(variable) {
+  var query = window.location.search.substring(1);
+  if (!query) {
+    query = window.location.hash.replace("#", "");
+  }
+  var vars = query.split("&");
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split("=");
+    if (pair[0] == variable) {
+      return pair[1];
+    }
+  }
+  return false;
+}
+</script>
+<div style="display:none"></div>
+
+</body>
+</html>
